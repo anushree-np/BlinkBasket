@@ -1,47 +1,30 @@
-import {
-    db,
-    auth
-} from "../config/firebase.js";
-
+import { db, auth } from "../config/firebase.js";
 
 import {
-
-    collection,
-    getDocs,
-    addDoc,
-    query,
-    where
-
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
-
 
 /* =====================================================
    COLLECTIONS
 ===================================================== */
 
-const productCollection =
-    collection(db, "products");
+const productCollection = collection(db, "products");
 
-
-const categoryCollection =
-    collection(db, "categories");
-
+const categoryCollection = collection(db, "categories");
 
 /* =====================================================
    HTML ELEMENTS
 ===================================================== */
 
-const userProductContainer =
-    document.getElementById("userProductContainer");
+const userProductContainer = document.getElementById("userProductContainer");
 
+const searchInput = document.getElementById("searchInput");
 
-const searchInput =
-    document.getElementById("searchInput");
-
-
-const categoryFilter =
-    document.getElementById("categoryFilter");
-
+const categoryFilter = document.getElementById("categoryFilter");
 
 /* =====================================================
    GLOBAL PRODUCT ARRAY
@@ -49,93 +32,76 @@ const categoryFilter =
 
 let allProducts = [];
 
-
 /* =====================================================
    LOAD PRODUCTS
 ===================================================== */
 
 async function loadProducts() {
+  try {
+    const snapshot = await getDocs(productCollection);
 
-    try {
+    allProducts = [];
 
-        const snapshot =
-            await getDocs(productCollection);
+    snapshot.forEach((productDoc) => {
+      const product = productDoc.data();
 
+      if (product.isDeleted) {
+        return;
+      }
 
-        allProducts = [];
+      allProducts.push({
+        id: productDoc.id,
 
+        ...product,
+      });
+    });
 
-        snapshot.forEach((productDoc) => {
-
-            const product =
-                productDoc.data();
-
-
-            if (product.isDeleted) {
-
-                return;
-            }
-
-
-            allProducts.push({
-
-                id: productDoc.id,
-
-                ...product
-            });
-
-        });
-
-
-        renderProducts(allProducts);
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-    }
-
+    renderProducts(allProducts);
+  } catch (error) {
+    console.error(error);
+  }
 }
-
-
 
 /* =====================================================
    RENDER PRODUCTS
 ===================================================== */
 
 function renderProducts(products) {
+  userProductContainer.innerHTML = "";
 
-    userProductContainer.innerHTML = "";
+  if (products.length === 0) {
+    userProductContainer.innerHTML = `
 
+            <h2>
 
-    if (products.length === 0) {
+                No Products Found
 
-        userProductContainer.innerHTML = `
-
-            <h2>No Products Found</h2>
+            </h2>
         `;
 
-        return;
-    }
+    return;
+  }
 
+  products.forEach((product) => {
+    const card = document.createElement("div");
 
-    products.forEach((product) => {
+    card.classList.add("product-card");
 
-        const card =
-            document.createElement("div");
-
-
-        card.classList.add("product-card");
-
-
-        card.innerHTML = `
+    card.innerHTML = `
 
             <img src="${product.imageURL}">
 
-            <h3>${product.title}</h3>
+            <h3>
 
-            <p>${product.description}</p>
+                ${product.title}
+
+            </h3>
+
+            <p>
+
+                ${product.description}
+
+            </p>
 
             <p class="price">
 
@@ -156,92 +122,88 @@ function renderProducts(products) {
                 ${product.stock}
 
             </p>
-${product.stock <= 0
-    ? `
 
-        <button class="remove-btn">
+            ${
+              product.stock <= 0
+                ? `
 
-            Out Of Stock
+                    <button class="remove-btn">
 
-        </button>
-    `
-    : `
+                        Out Of Stock
 
-        <button class="primary-btn add-cart-btn">
+                    </button>
+                `
+                : `
 
-            Add To Cart
+                    <button class="primary-btn add-cart-btn">
 
-        </button>
-    `
-}
+                        Add To Cart
+
+                    </button>
+                `
+            }
         `;
 
+    userProductContainer.appendChild(card);
 
-        userProductContainer.appendChild(card);
-        /* =========================
-   ADD TO CART
-========================= */
+    /* =========================
+           ADD TO CART
+        ========================= */
 
-const addCartBtn =
-    card.querySelector(".add-cart-btn");
+    const addCartBtn = card.querySelector(".add-cart-btn");
 
+    if (addCartBtn) {
+      addCartBtn.addEventListener("click", async () => {
+        try {
+          const user = auth.currentUser;
 
-addCartBtn.addEventListener("click", async () => {
-
-    try {
-
-        const user =
-            auth.currentUser;
-
-
-        if (!user) {
-
+          if (!user) {
             alert("Please Login First");
 
             return;
-        }
+          }
 
+          /* =========================
+                       STOCK CHECK
+                    ========================= */
 
-        // CHECK EXISTING CART ITEM
+          if (product.stock <= 0) {
+            alert("Product Out Of Stock");
 
-        const cartCollection =
-            collection(db, "cart");
+            return;
+          }
 
+          /* =========================
+                       CART COLLECTION
+                    ========================= */
 
-        const cartQuery =
-            query(
-                cartCollection,
-                where("userId", "==", user.uid),
-                where("productId", "==", product.id)
-            );
+          const cartCollection = collection(db, "cart");
 
+          /* =========================
+                       CHECK EXISTING PRODUCT
+                    ========================= */
 
-        const snapshot =
-            await getDocs(cartQuery);
+          const cartQuery = query(
+            cartCollection,
+            where("userId", "==", user.uid),
+            where("productId", "==", product.id),
+          );
 
+          const snapshot = await getDocs(cartQuery);
 
-        // PRODUCT ALREADY EXISTS
+          if (!snapshot.empty) {
+            const existingData = snapshot.docs[0].data();
 
-        if (!snapshot.empty) {
+            alert(`Already In Cart (${existingData.quantity})`);
 
-            const existingDoc =
-                snapshot.docs[0];
+            return;
+          }
 
+          /* =========================
+                       ADD TO CART
+                    ========================= */
 
-            const existingData =
-                existingDoc.data();
-
-
-            return alert(
-                `Already In Cart (${existingData.quantity})`
-            );
-        }
-
-
-        // ADD TO CART
-
-        await addDoc(cartCollection, {
-
+          await addDoc(cartCollection, {
             userId: user.uid,
 
             productId: product.id,
@@ -254,111 +216,65 @@ addCartBtn.addEventListener("click", async () => {
 
             quantity: 1,
 
-            totalPrice: product.price
-        });
+            totalPrice: product.price,
+          });
 
-
-        alert("Added To Cart");
-
+          alert("Added To Cart");
+        } catch (error) {
+          console.error(error);
+        }
+      });
     }
-
-    catch (error) {
-
-        console.error(error);
-    }
-
-});
-
-    });
-
+  });
 }
-
-
 
 /* =====================================================
    LOAD CATEGORY FILTER
 ===================================================== */
 
 async function loadCategoryFilter() {
+  try {
+    const snapshot = await getDocs(categoryCollection);
 
-    try {
+    snapshot.forEach((categoryDoc) => {
+      const category = categoryDoc.data();
 
-        const snapshot =
-            await getDocs(categoryCollection);
+      if (category.isDeleted) {
+        return;
+      }
 
+      const option = document.createElement("option");
 
-        snapshot.forEach((categoryDoc) => {
+      option.value = category.name;
 
-            const category =
-                categoryDoc.data();
+      option.textContent = category.name;
 
-
-            if (category.isDeleted) {
-
-                return;
-            }
-
-
-            const option =
-                document.createElement("option");
-
-
-            option.value = category.name;
-
-            option.textContent = category.name;
-
-
-            categoryFilter.appendChild(option);
-
-        });
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-    }
-
+      categoryFilter.appendChild(option);
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
-
-
 
 /* =====================================================
    SEARCH & FILTER
 ===================================================== */
 
 function applyFilters() {
+  const searchText = searchInput.value.toLowerCase();
 
-    const searchText =
-        searchInput.value.toLowerCase();
+  const selectedCategory = categoryFilter.value;
 
+  const filteredProducts = allProducts.filter((product) => {
+    const matchesSearch = product.title.toLowerCase().includes(searchText);
 
-    const selectedCategory =
-        categoryFilter.value;
+    const matchesCategory =
+      selectedCategory === "" || product.categoryName === selectedCategory;
 
+    return matchesSearch && matchesCategory;
+  });
 
-    const filteredProducts =
-        allProducts.filter((product) => {
-
-            const matchesSearch =
-
-                product.title
-                    .toLowerCase()
-                    .includes(searchText);
-
-
-            const matchesCategory =
-
-                selectedCategory === "" ||
-
-                product.categoryName ===
-                selectedCategory;
-
-
-            return matchesSearch &&
-                   matchesCategory;
-        });
-    renderProducts(filteredProducts);
+  renderProducts(filteredProducts);
 }
 
 /* =====================================================
@@ -366,19 +282,17 @@ function applyFilters() {
 ===================================================== */
 
 searchInput.addEventListener("input", () => {
-
-    applyFilters();
-
+  applyFilters();
 });
-
 
 categoryFilter.addEventListener("change", () => {
-
-    applyFilters();
-
+  applyFilters();
 });
+
 /* =====================================================
    INITIAL LOAD
 ===================================================== */
+
 loadProducts();
+
 loadCategoryFilter();
