@@ -1,78 +1,43 @@
-import {
-    db,
-    auth
-} from "../config/firebase.js";
-
+import { db, auth } from "../config/firebase.js";
 
 import {
-
-    collection,
-
-    getDocs,
-
-    query,
-
-    where,
-
-    addDoc,
-
-    updateDoc,
-
-    deleteDoc,
-
-    doc
-
+  collection,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
-
-import {
-
-    onAuthStateChanged
-
-} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 
 /* =====================================================
    COLLECTIONS
 ===================================================== */
 
-const cartCollection =
-    collection(db, "cart");
+const cartCollection = collection(db, "cart");
 
+const orderCollection = collection(db, "orders");
 
-const orderCollection =
-    collection(db, "orders");
+const invoiceCollection = collection(db, "invoices");
 
-const invoiceCollection =
-    collection(db, "invoices");
-
-const productCollection =
-    collection(db, "products");
-
+const productCollection = collection(db, "products");
 
 /* =====================================================
    HTML ELEMENTS
 ===================================================== */
 
-const checkoutContainer =
-    document.getElementById("checkoutContainer");
+const checkoutContainer = document.getElementById("checkoutContainer");
 
+const checkoutTotal = document.getElementById("checkoutTotal");
 
-const checkoutTotal =
-    document.getElementById("checkoutTotal");
+const paymentMethod = document.getElementById("paymentMethod");
 
+const placeOrderBtn = document.getElementById("placeOrderBtn");
 
-const paymentMethod =
-    document.getElementById("paymentMethod");
-
-
-const placeOrderBtn =
-    document.getElementById("placeOrderBtn");
-
-
-const paymentStatus =
-    document.getElementById("paymentStatus");
-
+const paymentStatus = document.getElementById("paymentStatus");
 
 /* =====================================================
    GLOBALS
@@ -84,58 +49,41 @@ let cartItems = [];
 
 let grandTotal = 0;
 
-
 /* =====================================================
    LOAD CHECKOUT
 ===================================================== */
 
 async function loadCheckout() {
+  try {
+    checkoutContainer.innerHTML = "";
 
-    try {
+    grandTotal = 0;
 
-        checkoutContainer.innerHTML = "";
+    cartItems = [];
 
-        grandTotal = 0;
+    const cartQuery = query(
+      cartCollection,
+      where("userId", "==", currentUser.uid),
+    );
 
-        cartItems = [];
+    const snapshot = await getDocs(cartQuery);
 
+    snapshot.forEach((cartDoc) => {
+      const item = cartDoc.data();
 
-        const cartQuery =
-            query(
-                cartCollection,
-                where("userId", "==", currentUser.uid)
-            );
+      cartItems.push({
+        cartId: cartDoc.id,
 
+        ...item,
+      });
 
-        const snapshot =
-            await getDocs(cartQuery);
+      grandTotal += item.totalPrice;
 
+      const div = document.createElement("div");
 
-        snapshot.forEach((cartDoc) => {
+      div.classList.add("checkout-item");
 
-            const item =
-                cartDoc.data();
-
-
-            cartItems.push({
-
-                cartId: cartDoc.id,
-
-                ...item
-            });
-
-
-            grandTotal += item.totalPrice;
-
-
-            const div =
-                document.createElement("div");
-
-
-            div.classList.add("checkout-item");
-
-
-            div.innerHTML = `
+      div.innerHTML = `
 
                 <img src="${item.imageURL}">
 
@@ -152,263 +100,175 @@ async function loadCheckout() {
                 </div>
             `;
 
+      checkoutContainer.appendChild(div);
+    });
 
-            checkoutContainer.appendChild(div);
-
-        });
-
-
-        checkoutTotal.textContent =
-            `Total: ₹ ${grandTotal}`;
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-    }
-
+    checkoutTotal.textContent = `Total: ₹ ${grandTotal}`;
+  } catch (error) {
+    console.error(error);
+  }
 }
-
-
 
 /* =====================================================
    PLACE ORDER
 ===================================================== */
 
 placeOrderBtn.addEventListener("click", async () => {
+  try {
+    if (cartItems.length === 0) {
+      alert("Cart Is Empty");
 
-    try {
+      return;
+    }
 
-        if (cartItems.length === 0) {
-
-            alert("Cart Is Empty");
-
-            return;
-        }
-
-
-        /* =========================
+    /* =========================
            PAYMENT LOADING
         ========================= */
 
-        paymentStatus.textContent =
-            "Processing Payment...";
+    paymentStatus.textContent = "Processing Payment...";
 
+    placeOrderBtn.disabled = true;
 
-        placeOrderBtn.disabled = true;
-
-
-        /* =========================
+    /* =========================
            PAYMENT SIMULATION
         ========================= */
 
-        await new Promise((resolve) => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
 
-            setTimeout(resolve, 3000);
-
-        });
-
-
-        /* =========================
+    /* =========================
            RANDOM SUCCESS / FAILURE
         ========================= */
 
-        const paymentSuccess =
-            Math.random() > 0.2;
+    const paymentSuccess = Math.random() > 0.2;
 
+    // 80% SUCCESS RATE
 
-        // 80% SUCCESS RATE
+    if (!paymentSuccess) {
+      paymentStatus.textContent = "Payment Failed";
 
-        if (!paymentSuccess) {
+      placeOrderBtn.disabled = false;
 
-            paymentStatus.textContent =
-                "Payment Failed";
+      return;
+    }
 
+    paymentStatus.textContent = "Payment Successful";
 
-            placeOrderBtn.disabled = false;
-
-            return;
-        }
-
-
-        paymentStatus.textContent =
-            "Payment Successful";
-
-
-        /* =========================
+    /* =========================
            STOCK VALIDATION
         ========================= */
 
-        const productSnapshot =
-            await getDocs(productCollection);
+    const productSnapshot = await getDocs(productCollection);
 
+    for (const item of cartItems) {
+      let productFound = false;
 
-        for (const item of cartItems) {
+      productSnapshot.forEach((productDoc) => {
+        const product = productDoc.data();
 
-            let productFound = false;
+        if (productDoc.id === item.productId) {
+          productFound = true;
 
-
-            productSnapshot.forEach((productDoc) => {
-
-                const product =
-                    productDoc.data();
-
-
-                if (productDoc.id === item.productId) {
-
-                    productFound = true;
-
-
-                    if (product.stock < item.quantity) {
-
-                        throw new Error(
-                            `${product.title} Out Of Stock`
-                        );
-                    }
-
-                }
-
-            });
-
-
-            if (!productFound) {
-
-                throw new Error(
-                    "Product No Longer Exists"
-                );
-            }
-
+          if (product.stock < item.quantity) {
+            throw new Error(`${product.title} Out Of Stock`);
+          }
         }
+      });
 
+      if (!productFound) {
+        throw new Error("Product No Longer Exists");
+      }
+    }
 
-        /* =========================
+    /* =========================
            CREATE ORDER
         ========================= */
-const orderRef =
-    await addDoc(orderCollection, {
+    const orderRef = await addDoc(orderCollection, {
+      userId: currentUser.uid,
 
-        userId: currentUser.uid,
+      items: cartItems,
 
-        items: cartItems,
+      totalAmount: grandTotal,
 
-        totalAmount: grandTotal,
+      paymentMethod: paymentMethod.value,
 
-        paymentMethod: paymentMethod.value,
+      paymentStatus: "Paid",
 
-        paymentStatus: "Paid",
+      orderStatus: "Placed",
 
-        orderStatus: "Placed",
-
-        createdAt: new Date()
+      createdAt: new Date(),
     });
 
-    const invoiceNumber =
-    `INV-${Date.now()}`;
+    const invoiceNumber = `INV-${Date.now()}`;
 
+    await addDoc(invoiceCollection, {
+      orderId: orderRef.id,
 
-await addDoc(invoiceCollection, {
+      userId: currentUser.uid,
 
-    orderId: orderRef.id,
+      invoiceNumber: invoiceNumber,
 
-    userId: currentUser.uid,
+      items: cartItems,
 
-    invoiceNumber: invoiceNumber,
+      totalAmount: grandTotal,
 
-    items: cartItems,
+      paymentMethod: paymentMethod.value,
 
-    totalAmount: grandTotal,
+      createdAt: new Date(),
+    });
 
-    paymentMethod: paymentMethod.value,
-
-    createdAt: new Date()
-});
-
-
-        /* =========================
+    /* =========================
            UPDATE INVENTORY
         ========================= */
+    for (const item of cartItems) {
+      for (const productDoc of productSnapshot.docs) {
+        if (productDoc.id === item.productId) {
+          const product = productDoc.data();
 
-        for (const item of cartItems) {
+          const productRef = doc(db, "products", productDoc.id);
 
-            productSnapshot.forEach(async (productDoc) => {
-
-                if (productDoc.id === item.productId) {
-
-                    const product =
-                        productDoc.data();
-
-
-                    const productRef =
-                        doc(db, "products", productDoc.id);
-
-
-                    await updateDoc(productRef, {
-
-                        stock:
-                            product.stock - item.quantity
-                    });
-
-                }
-
-            });
-
+          await updateDoc(productRef, {
+            stock: product.stock - item.quantity,
+          });
         }
+      }
+    }
 
-
-        /* =========================
+    /* =========================
            CLEAR CART
         ========================= */
 
-        for (const item of cartItems) {
+    for (const item of cartItems) {
+      await deleteDoc(doc(db, "cart", item.cartId));
+    }
 
-            await deleteDoc(
-                doc(db, "cart", item.cartId)
-            );
-
-        }
-
-
-        /* =========================
+    /* =========================
            SUCCESS
         ========================= */
 
-        alert("Order Placed Successfully");
+    alert("Order Placed Successfully");
 
+    window.location.href = `./invoice.html?id=${orderRef.id}`;
+  } catch (error) {
+    console.error(error);
 
-       window.location.href =
-    `./invoice.html?id=${orderRef.id}`;
+    alert(error.message);
 
-    }
+    paymentStatus.textContent = "Payment Failed";
 
-    catch (error) {
-
-        console.error(error);
-
-        alert(error.message);
-
-        paymentStatus.textContent =
-            "Payment Failed";
-
-
-        placeOrderBtn.disabled = false;
-    }
-
+    placeOrderBtn.disabled = false;
+  }
 });
-
-
 
 /* =====================================================
    AUTH STATE
 ===================================================== */
 
 onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = user;
 
-    if (user) {
-
-        currentUser = user;
-
-        loadCheckout();
-    }
-
+    loadCheckout();
+  }
 });
