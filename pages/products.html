@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Products</title>
+
+    <link rel="stylesheet"
+          href="../css/main.css">
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            ShopEasy
+
+        </div>
+
+        <div class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="./cart.html">
+                Cart
+            </a>
+
+            <a href="./orders.html">
+                Orders
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- PAGE TITLE -->
+
+    <section class="products-page">
+
+        <h1 class="page-title">
+
+            All Products
+
+        </h1>
+<!-- SEARCH & FILTER -->
+
+<div class="filter-section">
+
+    <!-- SEARCH -->
+
+    <input type="text"
+           id="searchInput"
+           placeholder="Search Products...">
+
+
+    <!-- CATEGORY FILTER -->
+
+    <select id="categoryFilter">
+
+        <option value="">
+            All Categories
+        </option>
+
+    </select>
+
+</div>
+
+        <!-- PRODUCT GRID -->
+
+        <div id="userProductContainer"
+             class="product-grid">
+
+        </div>
+
+    </section>
+
+
+
+    <script type="module"
+            src="../js/product/userProducts.js">
+
+    </script>
+
+</body>
+
+</html>

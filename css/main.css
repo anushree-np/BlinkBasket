@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@import url("./base/reset.css");
+
+@import url("./components/buttons.css");
+
+@import url("./components/cards.css");
+
+@import url("./components/forms.css");
+
+@import url("./layouts/grid.css");
+
+@import url("./layouts/navbar.css");
+
+@import url("./pages/home.css");
+
+@import url("./pages/products.css");
+
+@import url("./pages/cart.css");
+
+@import url("./pages/auth.css");
+
+@import url("./pages/admin.css");
+
+@import url("./pages/checkout.css");
+
+@import url("./pages/invoice.css");
+
+@import url("./pages/login.css");
+
+@import url("./pages/orders.css");
+
+@import url("./pages/reports.css");
+
+@import url("./responsive.css");
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+
+    background-color: #f4f9ff;
+
+    color: #1e293b;
+
+    min-height: 100vh;
+}
+
+img {
+
+    width: 100%;
+
+    display: block;
+}
+
+button {
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: 2px solid #dbeafe;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-size: 15px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    border-color: #106EBE;
+
+    box-shadow: 0 0 0 4px rgba(16,110,190,0.15);
+}
+
+.primary-btn {
+
+    background-color: #106EBE;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 22px;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+.primary-btn:hover {
+
+    background-color: #0d5ea3;
+
+    transform: translateY(-2px);
+}
+
+.delete-btn,
+.remove-btn {
+
+    background-color: #ef4444;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+}
+
+.page-title {
+
+    text-align: center;
+
+    margin-bottom: 40px;
+
+    font-size: 42px;
+
+    color: #106EBE;
+}

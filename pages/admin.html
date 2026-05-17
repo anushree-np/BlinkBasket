@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+
+  <body>
+    <div class="admin-container">
+      <h1>Admin Product Management</h1>
+
+      <!-- CATEGORY FORM -->
+      <form id="categoryForm">
+        <input
+          type="text"
+          id="categoryName"
+          placeholder="Enter Category Name"
+          required
+        />
+
+        <button type="submit" class="primary-btn">
+          Save Category
+        </button>
+      </form>
+
+      <!-- CATEGORY LIST -->
+      <div id="categoryContainer"></div>
+
+      <!-- PRODUCT FORM -->
+      <form id="productForm">
+        <input
+          type="text"
+          id="productTitle"
+          placeholder="Product Title"
+          required
+        />
+
+        <textarea
+          id="productDescription"
+          placeholder="Product Description"
+          required
+        ></textarea>
+
+        <input
+          type="number"
+          id="productPrice"
+          placeholder="Product Price"
+          required
+        />
+
+        <select id="productCategory" required>
+          <option value="">
+            Select Category
+          </option>
+        </select>
+
+        <input
+          type="number"
+          id="productStock"
+          placeholder="Stock Quantity"
+          required
+        />
+
+        <input
+          type="text"
+          id="productImage"
+          placeholder="Image URL"
+          required
+        />
+
+        <button type="submit" class="primary-btn">
+          Save Product
+        </button>
+      </form>
+
+      <!-- PRODUCT LIST -->
+      <div id="productContainer" class="product-grid"></div>
+    </div>
+
+  </body>
+</html>
+<script type="module"
+        src="../js/auth/adminGuard.js">
+</script>
+
+<script type="module"
+        src="../js/product/product.js">
+</script>

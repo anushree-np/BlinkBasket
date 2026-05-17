@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout</title>
+
+    <link rel="stylesheet"
+          href="../css/main.css">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            ShopEasy
+
+        </div>
+
+        <div class="nav-links">
+
+            <a href="../index.html">
+
+                Home
+
+            </a>
+
+            <a href="./cart.html">
+
+                Cart
+
+            </a>
+
+            <a href="./products.html">
+
+                Products
+
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         CHECKOUT SECTION
+    ========================== -->
+
+    <section class="checkout-page">
+
+        <h1>
+
+            Checkout
+
+        </h1>
+
+
+        <!-- ORDER SUMMARY -->
+
+        <div id="checkoutContainer">
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <h2 id="checkoutTotal">
+
+            Total: ₹ 0
+
+        </h2>
+
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="payment-section">
+
+            <label for="paymentMethod">
+
+                Select Payment Method
+
+            </label>
+
+            <select id="paymentMethod">
+
+                <option value="Cash On Delivery">
+
+                    Cash On Delivery
+
+                </option>
+
+                <option value="Credit Card">
+
+                    Credit Card
+
+                </option>
+
+                <option value="UPI">
+
+                    UPI
+
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- PLACE ORDER BUTTON -->
+
+        <button id="placeOrderBtn"
+                class="primary-btn">
+
+            Place Order
+
+        </button>
+
+
+        <!-- PAYMENT STATUS -->
+
+        <p id="paymentStatus">
+
+        </p>
+
+    </section>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script type="module"
+            src="../js/order/checkout.js">
+
+    </script>
+
+</body>
+
+</html>

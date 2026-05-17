@@ -1,0 +1,38 @@
+@media (max-width: 768px) {
+
+    .navbar {
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+    }
+
+    #productForm {
+
+        grid-template-columns: 1fr;
+    }
+
+    #productForm button {
+
+        grid-column: span 1;
+    }
+
+    .cart-item {
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .hero h1 {
+
+        font-size: 48px;
+    }
+}

@@ -1,0 +1,61 @@
+.admin-page {
+
+    width: 92%;
+
+    margin: 40px auto;
+}
+
+.admin-page h1 {
+
+    text-align: center;
+
+    margin-bottom: 35px;
+
+    color: #106EBE;
+}
+
+#productForm,
+#categoryForm {
+
+    background-color: white;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+    margin-bottom: 30px;
+}
+
+#productForm {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+#productForm button {
+
+    grid-column: span 2;
+}
+
+#categoryForm {
+
+    display: flex;
+
+    gap: 18px;
+}
+
+.category-card {
+
+    background-color: white;
+
+    padding: 14px 18px;
+
+    border-radius: 14px;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}

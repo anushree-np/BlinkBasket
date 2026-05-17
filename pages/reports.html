@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Reports</title>
+
+    <link rel="stylesheet"
+          href="../css/main.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            BlinkBasket
+        </div>
+
+        <div class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="./admin.html">
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <section class="reports-page">
+
+        <h1 class="page-title">
+            Advanced Reports Dashboard
+        </h1>
+
+
+        <!-- FILTERS -->
+
+        <div class="report-filters">
+
+            <input type="date"
+                   id="fromDate">
+
+            <input type="date"
+                   id="toDate">
+
+            <button id="loadReportsBtn"
+                    class="primary-btn">
+
+                Load Reports
+
+            </button>
+
+        </div>
+
+
+        <!-- CUSTOMER REPORT -->
+
+        <div class="report-section">
+
+            <h2>
+                Customer Reports
+            </h2>
+
+            <div id="customerReportContainer"></div>
+
+        </div>
+
+
+        <!-- INVENTORY REPORT -->
+
+        <div class="report-section">
+
+            <h2>
+                Inventory Reports
+            </h2>
+
+            <div id="inventoryReportContainer"></div>
+
+        </div>
+
+
+        <!-- SALES REPORT -->
+
+        <div class="report-section">
+
+            <h2>
+                Sales Reports
+            </h2>
+
+            <div id="salesReportContainer"></div>
+
+        </div>
+
+    </section>
+
+
+    <script type="module"
+            src="../js/reports/reports.js">
+    </script>
+
+</body>
+</html>

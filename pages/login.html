@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+
+    <link rel="stylesheet"
+          href="../css/main.css">
+          
+
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <h1>Login</h1>
+
+        <form id="loginForm">
+
+            <input type="email"
+                   id="loginEmail"
+                   placeholder="Enter Email"
+                   required>
+
+            <input type="password"
+                   id="loginPassword"
+                   placeholder="Enter Password"
+                   required>
+
+            <button type="submit"
+                    class="primary-btn">
+                Login
+            </button>
+
+        </form>
+
+        <button id="googleLoginBtn"
+                class="primary-btn">
+            Login With Google
+        </button>
+
+        <button id="forgotPasswordBtn"
+                class="primary-btn">
+            Reset Password
+        </button>
+
+        <p>
+            Don't have an account?
+
+            <a href="./register.html">
+                Register
+            </a>
+        </p>
+
+    </div>
+
+    <script type="module"
+            src="../js/auth/auth.js">
+    </script>
+
+</body>
+
+</html>
