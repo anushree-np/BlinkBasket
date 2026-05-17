@@ -1,49 +1,97 @@
-import { auth, db } from "./config/firebase.js";
+import {
 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+    auth,
+    db
+
+} from "./config/firebase.js";
+
 
 import {
-  doc,
-  getDoc,
+
+    onAuthStateChanged
+
+} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+
+import {
+
+    doc,
+    getDoc
+
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
+
 /* =====================================================
-   AUTH CHECK
+   AUTH STATE
 ===================================================== */
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    return;
-  }
 
-  try {
-    const userRef = doc(db, "users", user.uid);
+    try {
 
-    const snapshot = await getDoc(userRef);
+        const navLinks =
+            document.querySelector(".nav-links");
 
-    if (!snapshot.exists()) {
-      return;
-    }
 
-    const userData = snapshot.data();
-
-    /* =========================
-           ADMIN BUTTON
+        /* =========================
+           NOT LOGGED IN
         ========================= */
 
-    if (userData.role === "admin") {
-      const navLinks = document.querySelector(".nav-links");
+        if (!user) {
 
-      navLinks.innerHTML += `
+            return;
+        }
+
+
+        /* =========================
+           GET USER ROLE
+        ========================= */
+
+        const userRef =
+            doc(db, "users", user.uid);
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        if (!snapshot.exists()) {
+
+            return;
+        }
+
+
+        const userData =
+            snapshot.data();
+
+
+        /* =========================
+           ADMIN NAVBAR
+        ========================= */
+
+        if (userData.role === "admin") {
+
+            navLinks.innerHTML += `
 
                 <a href="./pages/admin.html">
 
                     Admin
 
                 </a>
+
+                <a href="./pages/reports.html">
+
+                    Reports
+
+                </a>
             `;
+        }
+
     }
-  } catch (error) {
-    console.error(error);
-  }
+
+    catch (error) {
+
+        console.error(error);
+    }
+
 });
