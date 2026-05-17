@@ -516,6 +516,11 @@ Accent Color:
 - Real-time Inventory Updates
 
 ---
+# Published site
+
+https://anushree-np.github.io/BlinkBasket/
+
+---
 
 # Conclusion
 
