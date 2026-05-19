@@ -53,7 +53,7 @@ async function loadInvoice() {
 
                 <h1>
 
-                    ShopEasy Invoice
+                    BlinkBasket Invoice
 
                 </h1>
 

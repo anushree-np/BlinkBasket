@@ -1,73 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Orders</title>
 
-    <link rel="stylesheet"
-          href="../css/main.css">
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
 
-</head>
-
-<body>
-
+  <body>
     <!-- NAVBAR -->
 
     <nav class="navbar">
+      <div class="logo">BlinkBasket</div>
 
-        <div class="logo">
+      <div class="nav-links">
+        <a href="../index.html"> Home </a>
 
-            ShopEasy
-
-        </div>
-
-        <div class="nav-links">
-
-            <a href="../index.html">
-
-                Home
-
-            </a>
-
-            <a href="./products.html">
-
-                Products
-
-            </a>
-
-        </div>
-
+        <a href="./products.html"> Products </a>
+      </div>
     </nav>
-
 
     <!-- ORDERS -->
 
     <section class="orders-page">
+      <h1>Order History</h1>
 
-        <h1>
-
-            Order History
-
-        </h1>
-
-
-        <div id="ordersContainer">
-
-        </div>
-
+      <div id="ordersContainer"></div>
     </section>
 
-
-    <script type="module"
-        src="../js/order/orders.js">
-</script>
-
-</body>
-
+    <script type="module" src="../js/order/orders.js"></script>
+  </body>
 </html>
